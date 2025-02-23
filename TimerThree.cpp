@@ -19,6 +19,7 @@
 TimerThree Timer3;              // preinstatiate
 
 unsigned short TimerThree::pwmPeriod = 0;
+unsigned short TimerThree::pwmPrescale = 1;
 unsigned char TimerThree::clockSelectBits = 0;
 void (*TimerThree::isrCallback)() = TimerThree::isrDefaultUnused;
 
