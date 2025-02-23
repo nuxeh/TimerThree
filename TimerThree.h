@@ -52,23 +52,28 @@ class TimerThree
         const unsigned long cycles = (F_CPU / 2000000) * microseconds;
         if (cycles < TIMER3_RESOLUTION) {
                 clockSelectBits = _BV(CS30);
+                pwmPrescale = 1;
                 pwmPeriod = cycles;
         } else
         if (cycles < TIMER3_RESOLUTION * 8) {
                 clockSelectBits = _BV(CS31);
-                pwmPeriod = cycles / 8;
+                pwmPrescale = 8;
+                pwmPeriod = cycles / pwmPrescale;
         } else
         if (cycles < TIMER3_RESOLUTION * 64) {
                 clockSelectBits = _BV(CS31) | _BV(CS30);
-                pwmPeriod = cycles / 64;
+                pwmPrescale = 64;
+                pwmPeriod = cycles / pwmPrescale;
         } else
         if (cycles < TIMER3_RESOLUTION * 256) {
                 clockSelectBits = _BV(CS32);
-                pwmPeriod = cycles / 256;
+                pwmPrescale = 256;
+                pwmPeriod = cycles / pwmPrescale;
         } else
         if (cycles < TIMER3_RESOLUTION * 1024) {
                 clockSelectBits = _BV(CS32) | _BV(CS30);
-                pwmPeriod = cycles / 1024;
+                pwmPrescale = 1024;
+                pwmPeriod = cycles / pwmPrescale;
         } else {
                 clockSelectBits = _BV(CS32) | _BV(CS30);
                 pwmPeriod = TIMER3_RESOLUTION - 1;
@@ -155,6 +160,7 @@ class TimerThree
   private:
     // properties
     static unsigned short pwmPeriod;
+    static unsigned short pwmPrescale;
     static unsigned char clockSelectBits;
 
 
