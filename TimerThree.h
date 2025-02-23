@@ -141,7 +141,7 @@ class TimerThree
         setPwmDuty(pin, duty);
         TCCR3B = _BV(WGM33) | clockSelectBits;
     }
-    void pwm(uint8_t pin, uint32_t onTime) __attribute__((always_inline)) {
+    void pwm_ontime(uint8_t pin, uint32_t onTime) __attribute__((always_inline)) {
         setUpOutputs(pin);
         setOnTime(pin, onTime);
         TCCR3B = _BV(WGM33) | clockSelectBits;
@@ -150,7 +150,7 @@ class TimerThree
         if (microseconds > 0) setPeriod(microseconds);
         pwm(pin, duty);
     }
-    void pwm(uint8_t pin, uint32_t onTime, uint32_t microseconds) __attribute__((always_inline)) {
+    void pwm_ontime(uint8_t pin, uint32_t onTime, uint32_t microseconds) __attribute__((always_inline)) {
         if (microseconds > 0) setPeriod(microseconds);
         pwm(pin, onTime);
     }
