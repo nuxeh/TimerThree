@@ -1,6 +1,32 @@
 TimerThree Library
 ==================
 
+_Note:_ This fork allows specification of PWM on time in microseconds, rather
+than a duty cycle as a proportion of this period. Useful for producing timing
+accurate hardware generated pulse trains of specified pulse duration, and
+variable frequency.
+
+With the already existing handling of the timer prescaler, a wide range of
+periods is available, down to sub-Hz frequencies.
+
+Example of usage for specification of PWM on time:
+
+```c
+#define PIN 5
+#define ON_TIME_US 40000UL // pulse on time is 40 ms
+
+//initialise timer with 1s period
+Timer3.initialize(1000000);
+
+// specify on time
+Timer3.pwm_ontime(PIN,ON_TIME_US);
+```
+
+These improvements have currently only been made to the AVR portion of the
+code, so this is likely only useful on a Mega, Teensy 2.0, Atmega32u4 etc.
+
+---
+
 Paul Stoffregen's modified TimerThree.  This version provides 2 main benefits:
 
 1. Optimized inline functions - much faster for the most common usage
