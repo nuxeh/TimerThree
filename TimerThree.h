@@ -8,8 +8,8 @@
  *
  *
  *  This is free software. You can redistribute it and/or modify it under
- *  the terms of Creative Commons Attribution 3.0 United States License. 
- *  To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/us/ 
+ *  the terms of Creative Commons Attribution 3.0 United States License.
+ *  To view a copy of this license, visit http://creativecommons.org/licenses/by/3.0/us/
  *  or send a letter to Creative Commons, 171 Second Street, Suite 300, San Francisco, California, 94105, USA.
  *
  */
@@ -45,7 +45,7 @@ class TimerThree
     //****************************
     void initialize(unsigned long microseconds=1000000) __attribute__((always_inline)) {
         TCCR3B = _BV(WGM33);        // set mode as phase and frequency correct pwm, stop the timer
-        TCCR3A = 0;                 // clear control register A 
+        TCCR3A = 0;                 // clear control register A
         setPeriod(microseconds);
     }
     void setPeriod(unsigned long microseconds) __attribute__((always_inline)) {
@@ -187,7 +187,7 @@ class TimerThree
 
   /*
   // This code does not work properly in all cases :(
-  // https://github.com/PaulStoffregen/TimerOne/issues/17 
+  // https://github.com/PaulStoffregen/TimerOne/issues/17
   if (cycles < TIMER3_RESOLUTION * 16) {
     if (cycles < TIMER3_RESOLUTION * 4) {
       if (cycles < TIMER3_RESOLUTION) {
