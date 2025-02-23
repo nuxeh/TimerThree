@@ -103,19 +103,31 @@ class TimerThree
     //****************************
     //  PWM outputs
     //****************************
-    void setPwmDuty(char pin, unsigned int duty) __attribute__((always_inline)) {
+    void setPwmDuty(uint8_t pin, uint16_t duty) __attribute__((always_inline)) {
         unsigned long dutyCycle = pwmPeriod;
         dutyCycle *= duty;
         dutyCycle >>= 10;
-        if (pin == TIMER3_A_PIN) OCR3A = dutyCycle;
+        setCompareReg(pin, dutyCycle);
+    }
+    void setOnTime(uint8_t pin, uint32_t microseconds) __attribute__((always_inline)) {
+        unsigned long cycles = (F_CPU / 2000000) * microseconds;
+        unsigned short onPeriod = cycles / pwmPrescale;
+        if (onPeriod <= pwmPeriod) {
+            setCompareReg(pin, onPeriod);
+        } else {
+            setCompareReg(pin, pwmPeriod);
+        }
+    }
+    void setCompareReg(uint8_t pin, uint16_t compVal) {
+        if (pin == TIMER3_A_PIN) OCR3A = compVal;
         #ifdef TIMER3_B_PIN
-        else if (pin == TIMER3_B_PIN) OCR3B = dutyCycle;
+        else if (pin == TIMER3_B_PIN) OCR3B = compVal;
         #endif
         #ifdef TIMER3_C_PIN
-        else if (pin == TIMER3_C_PIN) OCR3C = dutyCycle;
+        else if (pin == TIMER3_C_PIN) OCR3C = compVal;
         #endif
     }
-    void pwm(char pin, unsigned int duty) __attribute__((always_inline)) {
+    void setUpOutputs(uint8_t pin) __attribute__((always_inline)) {
         if (pin == TIMER3_A_PIN) { pinMode(TIMER3_A_PIN, OUTPUT); TCCR3A |= _BV(COM3A1); }
         #ifdef TIMER3_B_PIN
         else if (pin == TIMER3_B_PIN) { pinMode(TIMER3_B_PIN, OUTPUT); TCCR3A |= _BV(COM3B1); }
@@ -123,14 +135,26 @@ class TimerThree
         #ifdef TIMER3_C_PIN
         else if (pin == TIMER3_C_PIN) { pinMode(TIMER3_C_PIN, OUTPUT); TCCR3A |= _BV(COM3C1); }
         #endif
+    }
+    void pwm(uint8_t pin, uint16_t duty) __attribute__((always_inline)) {
+        setUpOutputs(pin);
         setPwmDuty(pin, duty);
         TCCR3B = _BV(WGM33) | clockSelectBits;
     }
-    void pwm(char pin, unsigned int duty, unsigned long microseconds) __attribute__((always_inline)) {
+    void pwm(uint8_t pin, uint32_t onTime) __attribute__((always_inline)) {
+        setUpOutputs(pin);
+        setOnTime(pin, onTime);
+        TCCR3B = _BV(WGM33) | clockSelectBits;
+    }
+    void pwm(uint8_t pin, uint16_t duty, uint32_t microseconds) __attribute__((always_inline)) {
         if (microseconds > 0) setPeriod(microseconds);
         pwm(pin, duty);
     }
-    void disablePwm(char pin) __attribute__((always_inline)) {
+    void pwm(uint8_t pin, uint32_t onTime, uint32_t microseconds) __attribute__((always_inline)) {
+        if (microseconds > 0) setPeriod(microseconds);
+        pwm(pin, onTime);
+    }
+    void disablePwm(uint8_t pin) __attribute__((always_inline)) {
         if (pin == TIMER3_A_PIN) TCCR3A &= ~_BV(COM3A1);
         #ifdef TIMER3_B_PIN
         else if (pin == TIMER3_B_PIN) TCCR3A &= ~_BV(COM3B1);
